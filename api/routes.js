@@ -15,11 +15,9 @@ function asyncHandler(cb){
         }catch(error){
             res.status(500).send(error);
         }
+
     }
 }
-
-
-//this array is used to keep track of user + course records
 const users = [];
 const courses = [];
 
@@ -28,8 +26,7 @@ const authenticationUser = async(req, res, next) => {
     let message = null;
     const users = await Users.findAll();
     const credentials = auth(req);
-
-    // Look for a user whose `username` matches the credentials `name` property.
+//Check credentials
     if(credentials){
         const user = users.find( u => u.emailAddress === credentials.name);
 
@@ -39,7 +36,6 @@ const authenticationUser = async(req, res, next) => {
 
             if(authenticated) {
                 console.log(`Authentication successful for username: ${user.emailAddress}`);
-                // Store the user on the Request object.
                 req.currentUser = user;
             }else{
                 message = `Authentication failure for username: ${user.emailAddress}`;
@@ -52,7 +48,6 @@ const authenticationUser = async(req, res, next) => {
         }
         if(message){
             console.warn(message);
-
         res.status(401).json( {message: 'Access Denied'});
         }else{
             next();
@@ -62,7 +57,7 @@ const authenticationUser = async(req, res, next) => {
 
 
 
-// Send a GET request to /users to READ a list of users
+//Get all users
 router.get('/users', authenticationUser, asyncHandler( async(req,res) => {
     const user = req.currentUser;
     const users = await Users.findByPk(user.id, {
@@ -77,7 +72,7 @@ router.get('/users', authenticationUser, asyncHandler( async(req,res) => {
     res.status(200).json(users);
 }));
 
-// Send a POST request to /users
+//Create a new user
 router.post('/users',  [
     check('firstName')
         .exists({ checkNull: true, checkFalsy: true })
@@ -106,59 +101,60 @@ router.post('/users',  [
 
         user.password = bcryptjs.hashSync(user.password);
         await Users.create(req.body);
-
         return res.status(201).location('/').end();
     }
 }));
-
-// Send a GET request to /courses
+//Get all courses
 router.get('/courses',  asyncHandler(async(req, res)=>{
+//Excedes Expectations
     const courses = await Courses.findAll({
-      //Excedes Expectations
-	attributes: {
-      exclude: [
-        'createdAt',
-        'updatedAt'
-      ]
-    },
-    include: [{
-        model: User,
+        include:[
+            {
+                model: Users,
+                as: 'userName',
+                attributes: {
+                    exclude: [
+                        'password',
+                        'createdAt',
+                        'updatedAt'
+                    ]
+                }
+            },
+        ],
         attributes: {
-          exclude: [
-            'password',
-            'createdAt',
-            'updatedAt'
-          ]
-        },
-      },
-
-    ],
-  });
+            exclude: [
+                'createdAt',
+                'updatedAt'
+            ]
+        }
+    });
     res.status(200).json(courses);
 }));
 
-//Send a GET request to /courses:id
+//Get course by ID
 router.get('/courses/:id', asyncHandler(async(req, res) =>{
+//Excedes Expectations
     const courses = await Courses.findByPk(req.params.id,{
-      //Excedes Expectations
-	  attributes: {
-      exclude: [
-        'createdAt',
-        'updatedAt'
-      ]
-    },
-    include: [{
-      model: User,
-      attributes: {
-        exclude: [
-          'password',
-          'createdAt',
-          'updatedAt'
-        ]
-      },
-    }, ],
-  });
-
+        include:[
+            {
+                model: Users,
+                as: 'userName',
+                attributes: {
+                    exclude: [
+                        'password',
+                        'createdAt',
+                        'updatedAt'
+                    ]
+                }
+            },
+        ],
+        attributes: {
+            exclude: [
+                'createdAt',
+                'updatedAt'
+            ]
+        }
+    });
     if(courses){
         res.status(200).json(courses).end();
     }else{
@@ -168,8 +164,7 @@ router.get('/courses/:id', asyncHandler(async(req, res) =>{
 
 }));
 
-
-// Send a POST request to /courses to create a new course
+//Create new course
 router.post('/courses', [
     check('title')
         .exists( { checkNull: true, checkFalsy: true})
@@ -190,7 +185,7 @@ router.post('/courses', [
     }
 }));
 
-// Send a PUT request to /courses to update an existing course
+//Updates course
 router.put('/courses/:id', [
     check('title')
         .exists( { checkNull: true, checkFalsy: true } )
@@ -217,7 +212,7 @@ router.put('/courses/:id', [
             estimatedTime: req.body.estimatedTime,
             materialsNeeded: req.body.materialsNeeded
         }
-        //Excedes Expectations
+        //Exceeds Expectations
         if(user.id == course.userId){
             await course.update(newCourse);
             res.status(204).end();
@@ -230,16 +225,17 @@ router.put('/courses/:id', [
 
 }));
 
-// Send a DELETE request to /courses/:id to update an existing course
+// Deletes course
 router.delete('/courses/:id', authenticationUser, asyncHandler(async(req,res, next) =>{
 
         const course = await Courses.findByPk(req.params.id);
+//Excedes Expectations
         if(course){
             await course.destroy(req.body);
             res.status(204).end();
         }
         else{
-            res.status(403).json(({message: "You cannot Delete other user's courses"}));
+            res.status(403).json(({message: 'You cannot Delete this course'}));
         }
     }));
 module.exports = router;

@@ -9,6 +9,7 @@ const routes = require('./routes');
 const { sequelize } = require('./models');
 
 
+//connection for the database "fsjstd-restapi.db"
 (async () =>{
   try{
     await sequelize.authenticate();
@@ -18,21 +19,25 @@ const { sequelize } = require('./models');
   }
 })();
 
+
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
 // create the Express app
 const app = express();
 
+//Enable all CORS Requests
 app.use(cors());
 
+//Setup request body JSON parsing
 app.use(express.json());
 
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
 
-// API routes
+//add routes.
 app.use('/api', routes);
+
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
