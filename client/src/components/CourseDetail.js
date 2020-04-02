@@ -10,8 +10,8 @@ class CourseDetail extends Component {
         super(props);
         this.state ={
             courseDetail:[],
-           
-            
+
+
         }
     }
     //set up component
@@ -19,13 +19,13 @@ class CourseDetail extends Component {
     const { context } = this.props;
     const { id } = this.props.match.params;
     context.data.getCourse(id)
-   
+
       .then(course => {
        if(course){
            console.log(course);
         this.setState({
             courseDetail: course,
-           
+
         });
        }else {
            this.props.history.push('/notfound');
@@ -39,19 +39,19 @@ class CourseDetail extends Component {
 
   //Remove course from DB if "Delete" button is clicked
   onDelete = event => {
-   
-    if (window.confirm('Are you sure you want to delete this course? This action cannot be undone.')) {
+
+    if (window.confirm('Please confirm you would like to delete this course. This action cannot be undone!')) {
         console.log('Delete Confirmed')
-       
+
         const { id } = this.props.match.params;
         const { context } = this.props;
         const emailAddress = context.authenticatedUser.emailAddress;
         const password = context.authenticatedUser.password
 
- 
+
         context.data.deleteCourse(id, emailAddress, password)
         .then(() => {
-           
+
             this.props.history.push('/');
         })
         .catch(err => {
@@ -68,7 +68,7 @@ render() {
     const authUser = context.authenticatedUser;
     const { id, title, description, estimatedTime, materialsNeeded, userId, userName} = this.state.courseDetail;
     const author = userName ? `${userName.firstName} ${userName.lastName}`: null;
-  
+
 
     return (
         <Fragment>
@@ -103,14 +103,7 @@ render() {
                                     <Fragment>
                                         <div className="bounds">
                                             <div className="grid-100">
-                                            <span>
-                                                <Link className="button" to={`/forbidden`}>
-                                                Update Course
-                                                </Link>
-                                                <Link className="button" to={`/forbidden`}>
-                                                Delete Course
-                                                </Link>
-                                            </span>
+
                                             <Link className="button button-secondary" to="/">
                                                 Return to List
                                             </Link>
@@ -124,14 +117,7 @@ render() {
                                     <Fragment>
                                         <div className="bounds">
                                             <div className="grid-100">
-                                            <span>
-                                                <Link className="button" to={`/forbidden`}>
-                                                Update Course
-                                                </Link>
-                                                <Link className="button" to={`/forbidden`}>
-                                                Delete Course
-                                                </Link>
-                                            </span>
+
                                             <Link className="button button-secondary" to="/">
                                                 Return to List
                                             </Link>
