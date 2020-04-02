@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Form from './Form';
 
-export default class SignIn extends Component {
+export default class UserSignIn extends Component {
   state = {
     emailAddress: '',
     password: '',
@@ -17,31 +17,31 @@ export default class SignIn extends Component {
     } = this.state;
 
     return (
-      
+
       <div className="bounds">
-        <div className="grid-33 centered signin">
+        <div className="grid-33 centered UserSignIn">
           <h1>Sign In</h1>
-          <Form 
+          <Form
             cancel={this.cancel}
             errors={errors}
             submit={this.submit}
             submitButtonText="Sign In"
             elements={() => (
               <React.Fragment>
-                <input 
-                  id="emailAddress" 
-                  name="emailAddress" 
+                <input
+                  id="emailAddress"
+                  name="emailAddress"
                   type="text"
-                  value={emailAddress} 
-                  onChange={this.change} 
+                  value={emailAddress}
+                  onChange={this.change}
                   placeholder="Email Address" />
-                <input 
-                  id="password" 
+                <input
+                  id="password"
                   name="password"
                   type="password"
-                  value={password} 
-                  onChange={this.change} 
-                  placeholder="Password" />                
+                  value={password}
+                  onChange={this.change}
+                  placeholder="Password" />
               </React.Fragment>
             )} />
           <p>
@@ -62,7 +62,7 @@ export default class SignIn extends Component {
       };
     });
   }
-  
+
  //handle submit event
   submit = () => {
     const { context } = this.props;

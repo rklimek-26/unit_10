@@ -11,9 +11,9 @@ import Header from './components/Header';
 
 import NotFound from './components/NotFound';
 import Forbidden from './components/Forbidden';
-import SignIn from './components/SignIn';
-import SignUp from './components/SignUp';
-import SignOut from './components/SignOut';
+import UserSignIn from './components/UserSignIn';
+import UserSignUp from './components/UserSignUp';
+import UserSignOut from './components/UserSignOut';
 import Courses from './components/Courses';
 import CourseDetail from './components/CourseDetail';
 import CreateCourse from './components/CreateCourse';
@@ -25,9 +25,9 @@ import Authenticated from './components/Authenticated';
 //set variables
 const HeaderWithContext = withContext(Header);
 const AuthWithContext = withContext(Authenticated);
-const SignUpWithContext = withContext(SignUp);
-const SignInWithContext = withContext(SignIn);
-const SignOutWithContext = withContext(SignOut);
+const SignUpWithContext = withContext(UserSignUp);
+const SignInWithContext = withContext(UserSignIn);
+const SignOutWithContext = withContext(UserSignOut);
 const CoursesWithContext = withContext(Courses);
 const CourseDetailWithContext = withContext(CourseDetail);
 const CreateCourseWithContext = withContext(CreateCourse);
@@ -44,14 +44,14 @@ export default () => (
           <Route path="/signin" component={SignInWithContext} />
           <Route path="/signup" component={SignUpWithContext} />
           <Route path ="/signout" component={SignOutWithContext} />
-          
+
           <PrivateRoute path="/courses/create" component ={CreateCourseWithContext}/>
           <PrivateRoute path="/courses/:id/update" component={UpdateCourseWithContext}/>
           <Route path="/courses/:id" component={CourseDetailWithContext} />
           <Route path="/notfound" component={NotFound} />
           <Route path="/forbidden" component={Forbidden} />
           <Route component={NotFound} />
-          
+
           </Switch>
         </div>
       </Router>
